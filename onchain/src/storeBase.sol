@@ -12,10 +12,11 @@ contract Store {
 	// Mapping to store user data based on their address
 	mapping(address => User) public users;
 
-	// create a new account
-	function createAccount(string memory shippingAddress) public {
+	// create a new user account
+	function createUserAccount(string memory shippingAddress) public {
 		require(!users[msg.sender].shippingAddress, "Account already exists");
 		require(bytes(shippingAddress).length > 0, "Shipping Address cannot be empty");
+
 		users[msg.sender] = User({shippingAddress, totalBuys: 0});
 	}
 }
