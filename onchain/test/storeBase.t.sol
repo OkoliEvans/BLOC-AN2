@@ -7,5 +7,21 @@ import {Store} from "../src/storeBase.sol";
 contract StoreTest is Test {
     Store public store;
 
+    function setUp() public {
+        store = new Store();
+    }
+
+    function testCreateUserAccount() public {
+        string memory shippingAddress = "123 Main Street, City, Country";
+
+        store.createUserAccount(shippingAddress);
+
+        (string memory storedShippingAddress, uint8 totalBuys) = store.users(address(this));
+
+        assertEq(storedShippingAddress, shippingAddress, "Shipping address should match");
+
+        assertEq(totalBuys, 0, "Total buys should be initialized to 0.");
+    }
+
    
 }
