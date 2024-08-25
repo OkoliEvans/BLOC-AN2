@@ -43,7 +43,7 @@ contract StoreTest is Test {
 
     function testCreateVendorAccount() public {
         string memory homeAddress = "123 Main Street, City, Country";
-        string memory phoneNumber = "123-456-7890";
+        string memory phoneNumber = "123-456-78900";
         address walletAddress = address(this);
 
         store.createVendorAccount(homeAddress, walletAddress, phoneNumber);

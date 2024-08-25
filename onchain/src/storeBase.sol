@@ -35,6 +35,10 @@ contract Store {
 	mapping(address => bool) private isVendor;
 	address[] registeredVendors;
 
+	/// @notice Contract escrow account
+	address escrowVault;
+
+
 	// ###### ACTIONS ######
 
 	// create a new user account
