@@ -40,5 +40,58 @@ contract StoreTest is Test {
         vm.expectRevert("user cannot register same address twice");
         store.createUserAccount(shippingAddress);
     }
-   
+
+    function testCreateVendorAccount() public {
+        string memory homeAddress = "123 Main Street, City, Country";
+        string memory phoneNumber = "123-456-7890";
+        address walletAddress = address(this);
+
+        store.createVendorAccount(homeAddress, walletAddress, phoneNumber);
+
+        (uint256 id, string memory storedHomeAddress, string memory storedPhoneNumber, address storedWalletAddress) = store.vendors(address(this));
+
+        assertEq(storedHomeAddress, homeAddress, "Home address should match");
+        assertEq(storedPhoneNumber, phoneNumber, "Phone number should match");
+        assertEq(storedWalletAddress, walletAddress, "Wallet address should match");
+
+        assertGt(id, 0, "Vendor ID should be greater than 0.");
+    }
+
+    function testCreateVendorAccountWithEmptyAddress() public {
+        string memory emptyHomeAddress = "";
+        string memory phoneNumber = "123-456-7890";
+        address walletAddress = address(this);
+
+        vm.expectRevert("Home Address cannot be empty");
+        store.createVendorAccount(emptyHomeAddress, walletAddress, phoneNumber);
+    }
+
+    function testCreateVendorAccountWithEmptyWalletAddress() public {
+        string memory homeAddress = "123 Main Street, City, Country";
+        string memory phoneNumber = "123-456-7890";
+        address walletAddress = address(0);
+
+        vm.expectRevert("Wallet Address cannot be empty");
+        store.createVendorAccount(homeAddress, walletAddress, phoneNumber);
+    }
+
+    function testCreateVendorAccountWithEmptyPhoneNumber() public {
+        string memory homeAddress = "123 Main Street, City, Country";
+        string memory emptyPhoneNumber = "";
+        address walletAddress = address(this);
+
+        vm.expectRevert("Phone Number cannot be empty");
+        store.createVendorAccount(homeAddress, walletAddress, emptyPhoneNumber);
+    }
+
+    function testCreateDuplicateVendorAccount() public {
+        string memory homeAddress = "123 Main Street, City, Country";
+        string memory phoneNumber = "123-456-7890";
+        address walletAddress = address(this);
+
+        store.createVendorAccount(homeAddress, walletAddress, phoneNumber);
+
+        vm.expectRevert("vendor cannot register same address twice");
+        store.createVendorAccount(homeAddress, walletAddress, phoneNumber);
+    }
 }
