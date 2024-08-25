@@ -84,7 +84,7 @@ contract StoreTest is Test {
         store.createVendorAccount(homeAddress, walletAddress, emptyPhoneNumber);
     }
 
-    function testCreateDuplicatVendorAccount() public {
+    function testCreateDuplicateVendorAccount() public {
         string memory homeAddress = "123 Main Street, City, Country";
         string memory phoneNumber = "123-456-7890";
         address walletAddress = address(this);
