@@ -23,6 +23,38 @@ contract Store {
 		address walletAddress;
 	}
 
+	struct Product {
+        uint256 id;
+        address owner;
+		string name;
+        string description;
+        ProductCategory category;
+        uint256 price;
+		uint256 quantity;
+        uint256 manufacturingDate;
+        uint256 expiryDate;
+        ProductCondition condition;
+		string image; // ipfs CID
+    }
+
+    enum ProductCondition {
+        BrandNew,
+        ForeignUsed,
+        NigerianUsed
+    }
+
+    enum ProductCategory {
+        Clothings,
+        Electronics,
+        Appliances,
+        Furniture,
+        Plastics,
+        Phones,
+        FootWears,
+        Laptops,
+        Others
+    }
+
 	// ###### MAPPINGS ######
 
 	// Mapping to store user data based on their address
@@ -37,6 +69,10 @@ contract Store {
 
 	/// @notice Contract escrow account
 	address escrowVault;
+
+	// Map productId to Product struct for easy manipulations
+	mapping(uint256 => Product) public products;
+	uint256[] public productIds;
 
 
 	// ###### ACTIONS ######
@@ -64,4 +100,45 @@ contract Store {
 		registeredVendors.push(msg.sender);
 		isVendor[msg.sender] = true;
 	}
+
+	// add a new product
+	// Only registered vendors are granted access.
+	// Params: product description, product category, product amount, product manufacturing date, product expiry date, product condition, product image (ipfs CID)
+	function addProduct(
+		string memory name,
+        string memory description,
+        ProductCategory category,
+        uint256 price,
+		uint256 quantity,
+        uint256 manufacturingDate,
+        uint256 expiryDate,
+        ProductCondition condition,
+		string memory image
+    ) public {
+        require(
+            isVendor[msg.sender] == true,
+            "Only registered vendors can add products"
+        );
+		// validations
+		require(bytes(name).length > 0, "Name cannot be empty");
+		require(price > 0, "Price cannot be empty");
+		require(quantity > 0, "Quantity cannot be empty");
+		require(bytes(image).length > 0, "Image cannot be empty");
+
+        uint256 productId = productIds.length + 1;
+        products[productId] = Product({
+            id: productId,
+            owner: msg.sender,
+			name: name,
+            description: description,
+            category: category,
+            price: price,
+			quantity: quantity,
+            manufacturingDate: manufacturingDate,
+            expiryDate: expiryDate,
+            condition: condition,
+			image: image
+        });
+        productIds.push(productId);
+    }
 }
