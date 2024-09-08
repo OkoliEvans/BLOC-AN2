@@ -278,4 +278,227 @@ contract StoreTest is Test {
             ""
         );
     }
+
+    // product update tests
+    function testUpdateProduct() public {
+        store.createVendorAccount(
+            "123 Main Street, City, Country",
+            address(this),
+            "123-456-7890"
+        );
+        store.addProduct(
+            "Product 1",
+            "Product 1 description",
+            Store.ProductCategory.Electronics,
+            100,
+            10,
+            1630000000,
+            1730000000,
+            Store.ProductCondition.BrandNew,
+            "QmXZnJ1YQZz"
+        );
+
+        store.updateProduct(
+            1,
+            "Product 2",
+            "Product 2 description",
+            Store.ProductCategory.Clothings,
+            200,
+            20,
+            1630000000,
+            1730000000,
+            Store.ProductCondition.BrandNew,
+            "QmXZnJ1YQZz"
+        );
+
+        (
+            uint256 storedId,
+            address owner,
+            string memory storedName,
+            string memory storedDescription,
+            Store.ProductCategory storedCategory,
+            uint256 storedPrice,
+            uint256 storedQuantity,
+            uint256 storedManufacturingDate,
+            uint256 storedExpiryDate,
+            Store.ProductCondition storedCondition,
+            string memory storedImage
+        ) = store.products(1);
+
+        assertEq(storedId, 1, "Product ID should match");
+        assertEq(owner, address(this), "Owner should match");
+        assertEq(storedName, "Product 2", "Name should match");
+        assertEq(
+            storedDescription,
+            "Product 2 description",
+            "Description should match"
+        );
+        assertEq(
+            uint256(storedCategory),
+            uint256(Store.ProductCategory.Clothings),
+            "Category should match"
+        );
+        assertEq(storedPrice, 200, "Price should match");
+        assertEq(storedQuantity, 20, "Quantity should match");
+        assertEq(
+            storedManufacturingDate,
+            1630000000,
+            "Manufacturing date should match"
+        );
+        assertEq(storedExpiryDate, 1730000000, "Expiry date should match");
+        assertEq(
+            uint256(storedCondition),
+            uint256(Store.ProductCondition.BrandNew),
+            "Condition should match"
+        );
+        assertEq(storedImage, "QmXZnJ1YQZz", "Image should match");
+    }
+
+    function testUpdateProductWithoutVendorAccount() public {
+        vm.expectRevert("Only the owner of the product can update it");
+        store.updateProduct(
+            1,
+            "Product 2",
+            "Product 2 description",
+            Store.ProductCategory.Clothings,
+            200,
+            20,
+            1630000000,
+            1730000000,
+            Store.ProductCondition.BrandNew,
+            "QmXZnJ1YQz"
+        );
+    }
+
+    function testUpdateProductWithEmptyName() public {
+        store.createVendorAccount(
+            "123 Main Street, City, Country",
+            address(this),
+            "123-456-7890"
+        );
+        store.addProduct(
+            "Product 1",
+            "Product 1 description",
+            Store.ProductCategory.Electronics,
+            100,
+            10,
+            1630000000,
+            1730000000,
+            Store.ProductCondition.BrandNew,
+            "QmXZnJ1YQZz"
+        );
+
+        vm.expectRevert("Name cannot be empty");
+        store.updateProduct(
+            1,
+            "",
+            "Product 2 description",
+            Store.ProductCategory.Clothings,
+            200,
+            20,
+            1630000000,
+            1730000000,
+            Store.ProductCondition.BrandNew,
+            "QmXZnJ1YQz"
+        );
+    }
+
+    function testUpdateProductWithEmptyPrice() public {
+        store.createVendorAccount(
+            "123 Main Street, City, Country",
+            address(this),
+            "123-456-7890"
+        );
+        store.addProduct(
+            "Product 1",
+            "Product 1 description",
+            Store.ProductCategory.Electronics,
+            100,
+            10,
+            1630000000,
+            1730000000,
+            Store.ProductCondition.BrandNew,
+            "QmXZnJ1YQZz"
+        );
+
+        vm.expectRevert("Price cannot be empty");
+        store.updateProduct(
+            1,
+            "Product 2",
+            "Product 2 description",
+            Store.ProductCategory.Clothings,
+            0,
+            20,
+            1630000000,
+            1730000000,
+            Store.ProductCondition.BrandNew,
+            "QmXZnJ1YQz"
+        );
+    }
+
+    function testUpdateProductWithEmptyQuantity() public {
+        store.createVendorAccount(
+            "123 Main Street, City, Country",
+            address(this),
+            "123-456-7890"
+        );
+        store.addProduct(
+            "Product 1",
+            "Product 1 description",
+            Store.ProductCategory.Electronics,
+            100,
+            10,
+            1630000000,
+            1730000000,
+            Store.ProductCondition.BrandNew,
+            "QmXZnJ1YQZz"
+        );
+
+        vm.expectRevert("Quantity cannot be empty");
+        store.updateProduct(
+            1,
+            "Product 2",
+            "Product 2 description",
+            Store.ProductCategory.Clothings,
+            200,
+            0,
+            1630000000,
+            1730000000,
+            Store.ProductCondition.BrandNew,
+            "QmXZnJ1YQz"
+        );
+    }
+
+    function testUpdateProductWithEmptyImage() public {
+        store.createVendorAccount(
+            "123 Main Street, City, Country",
+            address(this),
+            "123-456-7890"
+        );
+        store.addProduct(
+            "Product 1",
+            "Product 1 description",
+            Store.ProductCategory.Electronics,
+            100,
+            10,
+            1630000000,
+            1730000000,
+            Store.ProductCondition.BrandNew,
+            "QmXZnJ1YQZz"
+        );
+
+        vm.expectRevert("Image cannot be empty");
+        store.updateProduct(
+            1,
+            "Product 2",
+            "Product 2 description",
+            Store.ProductCategory.Clothings,
+            200,
+            20,
+            1630000000,
+            1730000000,
+            Store.ProductCondition.BrandNew,
+            ""
+        );
+    }
 }
