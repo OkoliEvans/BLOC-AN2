@@ -179,6 +179,11 @@ contract Store {
         ProductCondition condition,
         string memory image
     ) public {
+        require(productId > 0, "Product does not exist");
+        require(
+            productId <= productIds.length,
+            "Product does not exist in the store"
+        );
         require(
             products[productId].owner == msg.sender,
             "Only the owner of the product can update it"

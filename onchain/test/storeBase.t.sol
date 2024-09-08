@@ -501,4 +501,26 @@ contract StoreTest is Test {
             ""
         );
     }
+
+    function testUpdateProductWithInvalidProductId() public {
+        store.createVendorAccount(
+            "123 Main Street, City, Country",
+            address(this),
+            "123-456-7890"
+        );
+
+        vm.expectRevert("Product does not exist");
+        store.updateProduct(
+            1,
+            "Product 2",
+            "Product 2 description",
+            Store.ProductCategory.Clothings,
+            200,
+            20,
+            1630000000,
+            1730000000,
+            Store.ProductCondition.BrandNew,
+            "QmXZnJ1YQz"
+        );
+    }
 }
