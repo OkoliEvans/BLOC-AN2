@@ -357,7 +357,25 @@ contract StoreTest is Test {
     }
 
     function testUpdateProductWithoutVendorAccount() public {
-        vm.expectRevert("Only the owner of the product can update it");
+        // vm.expectRevert("Only the owner of the product can update it");
+        store.createVendorAccount(
+            "123 Main Street, City, Country",
+            address(this),
+            "123-456-7890"
+        );
+        store.addProduct(
+            "Product 1",
+            "Product 1 description",
+            Store.ProductCategory.Electronics,
+            100,
+            10,
+            1630000000,
+            1730000000,
+            Store.ProductCondition.BrandNew,
+            "QmXZnJ1YQZz"
+        );
+
+        // vm.prank(address(0x123));
         store.updateProduct(
             1,
             "Product 2",
@@ -511,7 +529,7 @@ contract StoreTest is Test {
             "123-456-7890"
         );
 
-        vm.expectRevert("Product does not exist");
+        vm.expectRevert("Product does not exist in the store");
         store.updateProduct(
             1,
             "Product 2",

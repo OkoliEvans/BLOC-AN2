@@ -67,7 +67,7 @@ contract Store {
 
     // Map vendor address (msg.sender) to Vendor struct
     mapping(address => Vendor) public vendors;
-    mapping(address => bool) private isVendor;
+    mapping(address => bool) private isRegisteredVendor;
     address[] registeredVendors;
 
     /// @notice Contract escrow account
@@ -107,7 +107,7 @@ contract Store {
     ) public {
         // validations
         require(
-            isVendor[msg.sender] == false,
+            isRegisteredVendor[msg.sender] == false,
             "vendor cannot register same address twice"
         );
         require(bytes(homeAddress).length > 0, "Home Address cannot be empty");
@@ -122,7 +122,7 @@ contract Store {
             walletAddress: walletAddress
         });
         registeredVendors.push(msg.sender);
-        isVendor[msg.sender] = true;
+        isRegisteredVendor[msg.sender] = true;
     }
 
     // add a new product
@@ -138,9 +138,9 @@ contract Store {
         uint256 expiryDate,
         ProductCondition condition,
         string memory image
-    ) public {
+    ) public returns(uint){
         require(
-            isVendor[msg.sender] == true,
+            isRegisteredVendor[msg.sender] == true,
             "Only registered vendors can add products"
         );
         // validations
@@ -164,6 +164,7 @@ contract Store {
             image: image
         });
         productIds.push(productId);
+        return totalListedProducts;
     }
 
     /// Desc: Updates already uploaded product on the store using the productId to access the product. Only vendor that uploaded the product is granted access.
@@ -182,13 +183,14 @@ contract Store {
         ProductCondition condition,
         string memory image
     ) public {
+        Product storage product = products[productId];
         require(productId > 0, "Product does not exist");
         require(
-            productId <= productIds.length,
+            productId <= totalListedProducts,
             "Product does not exist in the store"
         );
         require(
-            products[productId].owner == msg.sender,
+            product.owner == msg.sender,
             "Only the owner of the product can update it"
         );
         // validations
@@ -197,19 +199,15 @@ contract Store {
         require(quantity > 0, "Quantity cannot be empty");
         require(bytes(image).length > 0, "Image cannot be empty");
 
-        // Update product
-        products[productId] = Product({
-            id: productId,
-            owner: msg.sender,
-            name: name,
-            description: description,
-            category: category,
-            price: price,
-            quantity: quantity,
-            manufacturingDate: manufacturingDate,
-            expiryDate: expiryDate,
-            condition: condition,
-            image: image
-        });
+        product.owner = msg.sender;
+        product.name = name;
+        product.description = description;
+        product.category = category;
+        product.price = price;
+        product.quantity = quantity;
+        product.manufacturingDate = manufacturingDate;
+        product.expiryDate = expiryDate;
+        product.condition =condition;
+        product.image = image;
     }
 }
