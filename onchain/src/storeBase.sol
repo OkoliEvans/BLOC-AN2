@@ -2,10 +2,12 @@
 pragma solidity ^0.8.13;
 
 contract Store {
-	uint256 public totalUsers;
-	uint256 public totalVendors;
-	uint256 public totalBuys;
-	uint256 public totalListedProducts;
+    uint256 userIdAssigned;
+    uint256 vendorIdAssigned;
+    uint256 public totalUsers;
+    uint256 public totalVendors;
+    uint256 public totalBuys;
+    uint256 public totalListedProducts;
 
     // ###### STRUCTS ######
 
