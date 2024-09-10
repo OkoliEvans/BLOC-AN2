@@ -2,9 +2,10 @@
 pragma solidity ^0.8.13;
 
 contract Store {
-	uint256 userIdAssigned;
-	uint256 vendorIdAssigned;
-	uint256 totalBuys;
+	uint256 public totalUsers;
+	uint256 public totalVendors;
+	uint256 public totalBuys;
+	uint256 public totalListedProducts;
 
 	// ###### STRUCTS ######
 
@@ -79,7 +80,7 @@ contract Store {
 
 	// create a new user account
 	function createUserAccount(string memory shippingAddress) public {
-		uint256 userId = userIdAssigned += 1;
+		uint256 userId = totalUsers += 1;
 		require(bytes(shippingAddress).length > 0, "Shipping Address cannot be empty");
 		require(isRegistered[msg.sender] == false, "user cannot register same address twice");
 		users[msg.sender] = User({id: userId, shippingAddress: shippingAddress, totalBuys: 0});
@@ -95,7 +96,7 @@ contract Store {
 		require(walletAddress != address(0), "Wallet Address cannot be empty");
 		require(bytes(phoneNumber).length > 0, "Phone Number cannot be empty");
 		// change state
-		uint256 vendorId = vendorIdAssigned += 1;
+		uint256 vendorId = totalVendors += 1;
 		vendors[msg.sender] = Vendor({id: vendorId, homeAddress: homeAddress, phoneNumber: phoneNumber, walletAddress: walletAddress});
 		registeredVendors.push(msg.sender);
 		isVendor[msg.sender] = true;
@@ -125,7 +126,7 @@ contract Store {
 		require(quantity > 0, "Quantity cannot be empty");
 		require(bytes(image).length > 0, "Image cannot be empty");
 
-        uint256 productId = productIds.length + 1;
+        uint256 productId = totalListedProducts += 1;
         products[productId] = Product({
             id: productId,
             owner: msg.sender,

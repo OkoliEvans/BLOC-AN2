@@ -133,9 +133,11 @@ contract StoreTest is Test {
         uint256 productId = 1; // productIds.length + 1
         assertEq(
             store.productIds(0),
+            // store.totalListedProducts,
             productId,
             "Product ID should be added to productIds array"
         );
+        // console.logUint(store.totalListedProducts);
 
         (
             uint256 storedId,
